@@ -1,12 +1,9 @@
-const Quadtree = require('quadtree-lookup')
+const Lokijs = require('lokijs')
 const fs = require('fs')
 const measureTime = require('measure-time')
 
-
-let qt = new Quadtree.Quadtree(new Quadtree.Box(
-  new Quadtree.Point(-90, -180),
-  new Quadtree.Point(90, 180)
-))
+let db = new Lokijs()
+let buildings = db.addCollection('buildings', { indices: [ 'minlon', 'minlat', 'maxlon', 'maxlat' ] })
 
 let bbox = {
   minlat: 48.1813,
@@ -18,11 +15,10 @@ let bbox = {
 let data = JSON.parse(fs.readFileSync('data.json'))
 data.elements.forEach(
   (element) => {
-    let box = new Quadtree.Box(
-      new Quadtree.Point(element.bounds.minlat, element.bounds.minlon),
-      new Quadtree.Point(element.bounds.maxlat, element.bounds.maxlon)
-    )
-    qt.insert(box, element)
+    let data = element.bounds
+    data.id = element.id
+
+    buildings.insert(data)
   }
 )
 
@@ -34,12 +30,12 @@ for (var i = 0; i < 1000; i++) {
   let lon = Math.random() * (bbox.maxlon - bbox.minlon) + bbox.minlon
   let size = Math.random() * 0.2
 
-  let box = new Quadtree.Box(
-    new Quadtree.Point(lat, lon),
-    new Quadtree.Point(lat + size, lon + size) 
-  )
-
-  let items = qt.queryRange(box)
+  let items = buildings.find({
+    minlat: { '$gte': lat },
+    minlon: { '$gte': lon },
+    maxlat: { '$lte': lat + size },
+    maxlon: { '$lte': lon + size }
+  })
 
   count += items.length
 }
