@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "alasql": "^0.4.11",
     "async": "^2.6.1",
     "lokijs": "^1.5.5",
     "measure-time": "^3.1.1",
