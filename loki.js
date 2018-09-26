@@ -13,6 +13,9 @@ let bbox = {
 }
 
 let data = JSON.parse(fs.readFileSync('data.json'))
+
+let loadElapsed = measureTime()
+
 data.elements.forEach(
   (element) => {
     let data = element.bounds
@@ -21,6 +24,8 @@ data.elements.forEach(
     buildings.insert(data)
   }
 )
+
+console.log('loading: ', loadElapsed().millisecondsTotal + 'ms')
 
 let getElapsed = measureTime()
 let count = 0

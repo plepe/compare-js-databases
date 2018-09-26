@@ -16,6 +16,9 @@ let bbox = {
 }
 
 let data = JSON.parse(fs.readFileSync('data.json'))
+
+let loadElapsed = measureTime()
+
 data.elements.forEach(
   (element) => {
     let box = new Quadtree.Box(
@@ -25,6 +28,8 @@ data.elements.forEach(
     qt.insert(box, element)
   }
 )
+
+console.log('loading: ', loadElapsed().millisecondsTotal + 'ms')
 
 let getElapsed = measureTime()
 let count = 0
