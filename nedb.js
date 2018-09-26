@@ -13,26 +13,35 @@ let bbox = {
 }
 
 let data = JSON.parse(fs.readFileSync('data.json'))
-
-let loadElapsed = measureTime()
-
-async.each(
-  data.elements,
-  (element, done) => {
-    let data = element.bounds
-    data.id = element.id
-
-    buildings.insert(data, done)
-  },
-  cont
-)
-
 let getElapsed
 let count = 0
 
-function cont () {
-  console.log('loading: ', loadElapsed().millisecondsTotal + 'ms')
+async.each([ 'minlat', 'maxlat', 'minlon', 'maxlon' ],
+  (key, done) => {
+    buildings.ensureIndex({ fieldName: key }, done)
+  },
+  load
+)
 
+function load () {
+  let loadElapsed = measureTime()
+
+  async.each(
+    data.elements,
+    (element, done) => {
+      let data = element.bounds
+      data.id = element.id
+
+      buildings.insert(data, done)
+    },
+    () => {
+      console.log('loading: ', loadElapsed().millisecondsTotal + 'ms')
+      cont()
+    }
+  )
+}
+
+function cont () {
   getElapsed = measureTime()
 
   async.times(1000, (n, done) => {
