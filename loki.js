@@ -20,6 +20,7 @@ data.elements.forEach(
   (element) => {
     let data = element.bounds
     data.id = element.id
+    data.tags = element.tags
 
     buildings.insert(data)
   }
@@ -39,7 +40,8 @@ for (var i = 0; i < 1000; i++) {
     minlat: { '$gte': lat },
     minlon: { '$gte': lon },
     maxlat: { '$lte': lat + size },
-    maxlon: { '$lte': lon + size }
+    maxlon: { '$lte': lon + size },
+//    'tags.amenity': 'restaurant' // uncomment to query only restaurants
   })
 
   count += items.length

@@ -3,4 +3,4 @@
 way[building];
 relation[building];
 );
-out ids bb;
+out body bb;
