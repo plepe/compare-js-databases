@@ -1,0 +1,6 @@
+[out:json][bbox:48.1813,16.3201,48.2352,16.4195];
+(
+way[building];
+relation[building];
+);
+out ids bb;
